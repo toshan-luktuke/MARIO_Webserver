@@ -6,6 +6,7 @@ let inpArray = document.querySelectorAll("input[type='text']");
                 return (Math.round(number * factorOfTen) / factorOfTen);
             }
             //function to convert radians to degrees
+			
             function radians_to_degrees(radians)
             {
             var pi = Math.PI;
@@ -13,7 +14,7 @@ let inpArray = document.querySelectorAll("input[type='text']");
             }
 
 			function submitVals() {
-				const data = {};
+				let data = {};
 
 
                   
@@ -25,6 +26,12 @@ let inpArray = document.querySelectorAll("input[type='text']");
                 let res = inverseKinematics(data["servo_a"], data["servo_b"], data["servo_c"]);
 
                 console.log(res);
+				let joint = computeAngle(res);
+				data["servo_a"] = joint[0];
+				data["servo_b"] = joint[1];
+				data["servo_c"] = joint[2];
+				console.log(data);
+				
                 
                 
                 let finaldata = JSON.stringify(data);
@@ -149,6 +156,51 @@ let inpArray = document.querySelectorAll("input[type='text']");
                 // servo-c != 0 then servo-b = sin^-1((z-d0)*(a1+d3*sin(theta-elbow)) + d3*cos(theta-elbow)*y/sin(theta-base) / x^2 + y^2 + (z - d0)^2)
                 // servo-a (theta-elbow) = sin^-1(x^2 + y^2 + (z - d0)^2 - a1^2 - d3^2 / 2*a1*d3)
             }
+
+			function computeAngle(res)
+			{
+				let index =-1;
+				let count =0;
+				if (res[0] !=null && res[1]!=null && res[2]!=null)
+				{
+					if ( (0.0 <= res[0] && res[0] <= 180.0) && (0.0 <= res[1] && res[1] <= 180.0) && (0.0 <= res[2] && res[2] <= 180.0))
+					{
+						index =0;
+						count +=1;
+					}
+					if( (0.0 <= res[3] && res[3] <= 180.0) && (0.0 <= res[4] && res[4] <= 180.0) && (0.0 <= res[5] && res[5] <= 180.0))
+					{
+						index = 3;
+						count += 1;
+					}
+				}
+				if(index!= -1)
+				{
+					if(count ==2)
+					{
+						if (((res[1] + res[2]) % (2 * 180)) != 0 && (((res[1] + res[2]) % 180) == 0))
+						{
+							index = 0;
+						}
+						else if (((res[3] + res[4]) % (2 * 180)) != 0 && (((res[3] + res[4]) % 180) == 0))
+						{
+							index = 3;
+						}
+					}
+					let joint = [];
+					joint.push(res[index + 0]);
+					joint.push(res[index + 1]);
+					joint.push(res[index + 2]);
+
+					return joint;
+
+				}
+				else 
+				{
+					console.log("Invalid values");
+					return [null,null,null];
+				}
+			}
 
 
             
