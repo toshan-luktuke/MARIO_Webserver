@@ -27,13 +27,15 @@
 #define SCRATCH_BUFSIZE (10240)
 #define CHECK_FILE_EXTENSION(filename, ext) (strcasecmp(&filename[strlen(filename) - strlen(ext)], ext) == 0)
 
+
 typedef struct pid_const
 {
-    float servo_a;
-    float servo_b;
-    float servo_c;
+    double servo_a;
+    double servo_b;
+    double servo_c;
 } servo_const_t;
 
+servo_const_t computeAngles(double*);
 servo_const_t read_servo_const();
 void start_tuning_http_server();
 
