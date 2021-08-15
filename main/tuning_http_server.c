@@ -189,7 +189,8 @@ static esp_err_t tuning_servo_post_handler(httpd_req_t *req)
         ESP_LOGE(TAG, "invalid json response");
         return ESP_FAIL;
     }
-
+    
+    // Reads values from server 
     xyz_coordinates.x = (double)cJSON_GetObjectItem(root, "servo_a")->valuedouble;
     xyz_coordinates.y = (double)cJSON_GetObjectItem(root, "servo_b")->valuedouble;
     xyz_coordinates.z = (double)cJSON_GetObjectItem(root, "servo_c")->valuedouble;
@@ -239,7 +240,8 @@ static esp_err_t start_tuning_http_server_private()
 
 servo_const_t computeAngles(double *angles)
 {
-    int index = -1;
+    int index = -1; 
+    // Index = 0 denotes set of first three angles ; Index = 3 denotes set of last three angles ; Index = -1 denotes Invalid values
     int count = 0;
     if (angles[0] != -9.0 && angles[1] != -9.0 && angles[2] != -9.0)
     {
@@ -258,6 +260,9 @@ servo_const_t computeAngles(double *angles)
     {
         if (count == 2)
         {
+                // To handle redundancy
+                // Always sending those angles having approach vector as (0, 0, 1)
+                // Condition for that is theta_shoulder + theta_elbow should be odd multiple of 180
             if ((((int)(angles[1] + angles[2]) % (2 * 180)) != 0) && (((int)(angles[1] + angles[2]) % 180) == 0))
             {
                 index = 0;
@@ -267,6 +272,8 @@ servo_const_t computeAngles(double *angles)
                 index = 3;
             }
         }
+
+        // Sets servo angles 
         servo_constants.servo_a = (angles[index + 0]);
         servo_constants.servo_b = (angles[index + 1]);
         servo_constants.servo_c = (angles[index + 2]);
@@ -282,6 +289,7 @@ servo_const_t computeAngles(double *angles)
 
 servo_const_t read_servo_const()
 {
+    // To avoid repeated calculations for same angles
     if(tx!=xyz_coordinates.x || ty!=xyz_coordinates.y || tz != xyz_coordinates.z)
     {
     tx = xyz_coordinates.x;

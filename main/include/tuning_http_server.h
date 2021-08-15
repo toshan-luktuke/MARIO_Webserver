@@ -27,16 +27,21 @@
 #define SCRATCH_BUFSIZE (10240)
 #define CHECK_FILE_EXTENSION(filename, ext) (strcasecmp(&filename[strlen(filename) - strlen(ext)], ext) == 0)
 
-
+// Structure to store the Base,Shoulder,Elbow angles
 typedef struct pid_const
 {
-    double servo_a;
-    double servo_b;
-    double servo_c;
+    double servo_a; // Elbow Angle
+    double servo_b; // Shoulder Angle
+    double servo_c; // Base Angle
 } servo_const_t;
 
+//  Returns the feasible angles from all the possible Joint angles 
 servo_const_t computeAngles(double*);
+
+// Returns the three servo angles
 servo_const_t read_servo_const();
+
+
 void start_tuning_http_server();
 
 #endif
