@@ -1,6 +1,6 @@
 # Servo Webserver Inverse Kinematics
-This code implements inverse kinematics functionality to the existing webserver
-## Steps to Follow
+This code implements inverse kinematics functionality to the existing webserver of the [MARIO](https://github.com/SRA-VJTI/MARIO) arm.
+## Steps to Follow - In ESP-IDF
 - Configure the project
   - `cd firmware/MARIO_Webserver`
   - `idf.py menuconfig`
@@ -14,4 +14,8 @@ This code implements inverse kinematics functionality to the existing webserver
 Note:- If it shows `cmake flash error`. Run the following:
   - `sudo chmod 777 port`
   - `idf.py -p port flash`
+
+## TechStack
+- Javascript.
+- freeRTOS.
 
